@@ -64,6 +64,10 @@ TelegramBotToken = domoticzdata("TelegramBotToken")
 TBOName = domoticzdata("TelegramBotOffset")
 -- -------------------------------------------------------
 
+-- User settings
+SendConfirmation = "False"  -- Set to True to receive confirmation messages
+-- -------------------------------------------------------
+
 -- Constants derived from environment variables
 server_url = "http://"..DomoticzIP..":"..DomoticzPort
 telegram_url = "https://api.telegram.org/bot"..TelegramBotToken.."/"
@@ -358,10 +362,12 @@ function HandleCommand(cmd, SendTo, Group, MessageId)
   elseif replymarkup ~= "" then
 --~     added replymarkup to allow for custom keyboard reset also in case there is no text to send.
 --~     This could happen after running a bash file.
-    if Group ~= "" then
-      send_msg(Group,"done",MessageId,replymarkup)
-    else
-      send_msg(SendTo,"done",MessageId,replymarkup)
+    if SendConfirmation == "True" then
+      if Group ~= "" then
+        send_msg(Group,"done",MessageId,replymarkup)
+      else
+        send_msg(SendTo,"done",MessageId,replymarkup)
+      end
     end
   end
   return found
